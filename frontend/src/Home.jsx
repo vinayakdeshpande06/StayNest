@@ -10,10 +10,10 @@ function Home({ setView }) {
       </div>
 
       <div className="features">
-        {/* <div className="feature-card">
-          <h3>Wide Selection</h3>
-          <p>Choose from thousands of hotels worldwide.</p>
-        </div> */}
+        <div className="feature-card">
+          <h3>Athithi Devo Bhava</h3>
+          <p>World Class Hospitality with Traditional Touch</p>
+        </div> 
         <div className="feature-card">
           <h3>Best Prices</h3>
           <p>Competitive rates guaranteed for every stay.</p>
