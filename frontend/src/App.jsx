@@ -4,6 +4,7 @@ import Login from "./Login";
 import Home from "./Home";
 import AdminDashboard from "./AdminDashboard";
 import UserDashboard from "./UserDashboard";
+import ChatAssistant from "./chat/ChatAssistant";
 import "./style.css";
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
       <footer className="footer">
         <p>&copy; 2026 StayNest. All rights reserved.</p>
       </footer>
+      <ChatAssistant />
     </div>
   );
 }
