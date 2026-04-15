@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS auth_db;
+CREATE DATABASE IF NOT EXISTS user_db;
+CREATE DATABASE IF NOT EXISTS admin_db;
+
+
+CREATE USER 'staynest'@'%' IDENTIFIED BY 'Vinayak@28';
+
+GRANT ALL PRIVILEGES ON auth_db.* TO 'staynest'@'%';
+GRANT ALL PRIVILEGES ON user_db.* TO 'staynest'@'%';
+GRANT ALL PRIVILEGES ON admin_db.* TO 'staynest'@'%';
+
+FLUSH PRIVILEGES;

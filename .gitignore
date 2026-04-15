@@ -1,0 +1,16 @@
+# Environment variables - NEVER commit this file
+.env
+.env.local
+.env.*.local
+
+# Maven build outputs
+**/target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

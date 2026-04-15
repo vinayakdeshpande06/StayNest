@@ -1,0 +1,157 @@
+services:
+  # ─────────────────────────────────────────
+  # MySQL Database
+  # ─────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: staynest-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Vinayak@28
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+    networks:
+      - staynest-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pVinayak@28"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ─────────────────────────────────────────
+  # Discovery Server (Eureka)
+  # ─────────────────────────────────────────
+  discovery-server:
+    build:
+      context: ./backend/discovery-server
+      dockerfile: Dockerfile
+    container_name: staynest-discovery
+    ports:
+      - "8761:8761"
+    networks:
+      - staynest-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  # ─────────────────────────────────────────
+  # API Gateway
+  # ─────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile
+    container_name: staynest-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    networks:
+      - staynest-net
+
+  # ─────────────────────────────────────────
+  # Auth Service
+  # ─────────────────────────────────────────
+  auth-service:
+    build:
+      context: ./backend/auth-service
+      dockerfile: Dockerfile
+    container_name: staynest-auth
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - staynest-net
+
+  # ─────────────────────────────────────────
+  # Admin Service
+  # ─────────────────────────────────────────
+  admin-service:
+    build:
+      context: ./backend/admin-service
+      dockerfile: Dockerfile
+    container_name: staynest-admin
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - staynest-net
+
+  # ─────────────────────────────────────────
+  # User Service
+  # ─────────────────────────────────────────
+  user-service:
+    build:
+      context: ./backend/user-service
+      dockerfile: Dockerfile
+    container_name: staynest-user
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - staynest-net
+
+  # ─────────────────────────────────────────
+  # AI Service
+  # ─────────────────────────────────────────
+  ai-service:
+    build:
+      context: ./backend/ai-service
+      dockerfile: Dockerfile
+    container_name: staynest-ai
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    networks:
+      - staynest-net
+
+  # ─────────────────────────────────────────
+  # Email Service
+  # ─────────────────────────────────────────
+  email-service:
+    build:
+      context: ./backend/email-service
+      dockerfile: Dockerfile
+    container_name: staynest-email
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    networks:
+      - staynest-net
+
+  # ─────────────────────────────────────────
+  # Frontend (React + Nginx)
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: staynest-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - staynest-net
+
+networks:
+  staynest-net:
+    driver: bridge
+
+volumes:
+  mysql-data:

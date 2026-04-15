@@ -18,6 +18,10 @@ export default defineConfig({
         target: 'http://localhost:8082',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/admin-service/, '')
+      },
+      '/ai-service': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
       }
     }
   }

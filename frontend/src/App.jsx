@@ -5,7 +5,7 @@ import Home from "./Home";
 import AdminDashboard from "./AdminDashboard";
 import UserDashboard from "./UserDashboard";
 import ChatAssistant from "./chat/ChatAssistant";
-import "./style.css";
+import "./Style.css";
 
 function App() {
   const [view, setView] = useState(() => localStorage.getItem('view') || 'HOME');
